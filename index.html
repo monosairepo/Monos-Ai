@@ -1,40 +1,356 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ MONOS AI | Autonomous Command Center Protocol ⚡</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <title>MONOS AI // ADVANCED COMMAND CENTER</title>
     <style>
-        body { font-family: 'Space Grotesk', sans-serif; background-color: #020408; }
-        .font-mono { font-family: 'JetBrains Mono', sans-serif; }
-        .font-cyber { font-family: 'Syncopate', sans-serif; }
-        
-        .bg-command-grid { 
-            background-image: 
-                linear-gradient(rgba(34, 211, 238, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(34, 211, 238, 0.02) 1px, transparent 1px);
-            background-size: 25px 25px;
+        :root {
+            --bg-dark: #06070d;
+            --panel-bg: rgba(13, 16, 27, 0.85);
+            --accent-cyan: #00f0ff;
+            --accent-pink: #ff0055;
+            --matrix-green: #00ff66;
+            --text-main: #d1d5db;
+            --text-dim: #4b5563;
+            --border-glow: rgba(0, 240, 255, 0.15);
         }
-        .neon-glow-cyan { box-shadow: 0 0 40px rgba(6, 182, 212, 0.12); }
-        .panel-border { border: 1px solid rgba(51, 65, 85, 0.3); }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            padding: 15px;
+            position: relative;
+        }
+
+        /* Efek Monitor CRT */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 99999;
+            opacity: 0.8;
+            pointer-events: none;
+            background-size: 100% 4px, 6px 100%;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 15px;
+        }
+
+        /* Header Layout */
+        header {
+            grid-column: span 3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            background: linear-gradient(90deg, #0d101b, #1a233d);
+            border: 1px solid var(--accent-cyan);
+            box-shadow: 0 0 15px var(--border-glow);
+            clip-path: polygon(0 0, 98% 0, 100% 35%, 100% 100%, 2% 100%, 0 65%);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--matrix-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--matrix-green);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { opacity: 0.3; } to { opacity: 1; }
+        }
+
+        /* Panel Container */
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid #1e293b;
+            border-top: 3px solid #1e293b;
+            padding: 15px;
+            position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6);
+        }
+
+        .panel.active-border {
+            border-top: 3px solid var(--accent-cyan);
+        }
+
+        .panel-title {
+            font-size: 12px;
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Info Rows */
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+        .metric-row span:first-child { color: var(--text-dim); }
+        .metric-row span:last-child { color: #fff; font-weight: bold; }
+
+        /* CA Address Box */
+        .ca-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px dashed var(--accent-pink);
+            padding: 10px;
+            margin-top: 15px;
+            font-size: 11px;
+            word-break: break-all;
+            color: var(--text-main);
+            text-align: center;
+        }
+
+        /* Progress Bars */
+        .bar-chart {
+            margin-top: 15px;
+        }
+        .bar-group {
+            margin-bottom: 8px;
+        }
+        .bar-label { font-size: 11px; color: var(--text-dim); margin-bottom: 3px; }
+        .bar-container { background: #090d16; height: 8px; border: 1px solid #222; position: relative;}
+        .bar-fill { background: var(--accent-pink); height: 100%; width: 0%; transition: width 0.5s ease; }
+
+        /* Terminal Display */
+        .terminal-container {
+            display: flex;
+            flex-direction: column;
+            height: 550px;
+        }
+
+        .terminal-screen {
+            flex-grow: 1;
+            background: #030407;
+            border: 1px solid #111;
+            padding: 15px;
+            overflow-y: auto;
+            font-size: 12px;
+            color: var(--matrix-green);
+            line-height: 1.6;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+        }
+
+        /* Navigation Buttons */
+        .nav-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-cyber {
+            background: transparent;
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 12px;
+            text-decoration: none;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            position: relative;
+            clip-path: polygon(0 0, 93% 0, 100% 30%, 100% 100%, 0 100%);
+        }
+
+        .btn-cyber:hover {
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-cyber.pink {
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 7% 100%, 0 70%);
+        }
+
+        .btn-cyber.pink:hover {
+            background: rgba(255, 0, 85, 0.1);
+            box-shadow: 0 0 10px rgba(255, 0, 85, 0.3);
+        }
+
+        /* Dot Grid */
+        .matrix-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 4px;
+            margin-top: 15px;
+        }
+        .node-dot {
+            height: 10px;
+            background: #111827;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            header { grid-column: span 1; }
+        }
     </style>
 </head>
-<body class="bg-command-grid text-slate-200 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-black">
+<body>
 
-    <canvas id="matrixCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none opacity-[0.02] z-0"></canvas>
+    <div class="container">
+        
+        <!-- HEADER LAYER -->
+        <header>
+            <div class="brand">
+                <div class="pulse-dot"></div>
+                <div class="logo">MONOS SYSTEM MALFUNCTION MATRIX</div>
+            </div>
+            <div style="font-size: 11px; color: var(--accent-cyan); font-weight: bold;">
+                SYS_STATUS: <span style="color: var(--matrix-green);">P4_CONNECTED</span>
+            </div>
+        </header>
 
-    <div class="relative z-50 bg-slate-950 text-[10px] py-1.5 overflow-hidden whitespace-nowrap font-mono tracking-widest border-b border-slate-900 text-slate-500">
-        <div class="inline-block animate-[marquee_40s_linear_infinite]">
-            [SYSTEM_STATUS: ACTIVE] // CORE REPOSITORY: GITHUB.COM/MONOSAIREPO // INDEXING TWITTER VECTOR @MONOS_AI // NODE LATENCY: 12MS // INITIALIZING MAINNET FAUCETS // NO WALLET REQUIRED PROTOCOL V2 // ENGINE_STABLE //
+        <!-- LEFT PANEL: SYSTEM DIAGNOSTICS -->
+        <div class="panel active-border">
+            <div class="panel-title"><span>CORE TELEMETRY</span><span>[01]</span></div>
+            <div class="metric-row"><span>PROTOCOL</span><span>MONOS AI</span></div>
+            <div class="metric-row"><span>TICKER</span><span style="color:var(--accent-cyan)">$MONOS</span></div>
+            <div class="metric-row"><span>BLOCK L2</span><span>BASE MAINNET</span></div>
+            <div class="metric-row"><span>AGENT CORE</span><span>core_agent.py</span></div>
+            <div class="metric-row"><span>SYNC STATE</span><span style="color:var(--matrix-green)">AUTOMATED</span></div>
+            <div class="metric-row"><span>GAS SIGNING</span><span>ACTIVE</span></div>
+
+            <div class="panel-title" style="margin-top:20px;"><span>TOKEN VERIFICATION</span><span>[02]</span></div>
+            <div style="font-size: 11px; color: var(--text-dim);">Official Base Contract Address:</div>
+            <div class="ca-box">0x9bF4bDDa5d6cF6B02Cfc5387Fd1B583beabee0aA</div>
+
+            <div class="panel-title" style="margin-top:25px;"><span>RESOURCE ALLOCATION</span><span>[03]</span></div>
+            <div class="bar-chart">
+                <div class="bar-group">
+                    <div class="bar-label">X VECTOR INGESTION RATE</div>
+                    <div class="bar-container"><div class="bar-fill" id="bar1" style="background: var(--accent-cyan)"></div></div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">DECISION ENGINE LOAD</div>
+                    <div class="bar-container"><div class="bar-fill" id="bar2"></div></div>
+                </div>
+                <div class="bar-group">
+                    <div class="bar-label">BASE NETWORK SPEED</div>
+                    <div class="bar-container"><div class="bar-fill" id="bar3" style="background: var(--matrix-green)"></div></div>
+                </div>
+            </div>
         </div>
+
+        <!-- CENTER PANEL: LIVE WORKLOAD STREAM -->
+        <div class="panel active-border terminal-container">
+            <div class="panel-title"><span>AUTONOMOUS EXECUTION MATRIX LOGSTREAM</span><span>LIVE_FEED</span></div>
+            <div class="terminal-screen" id="terminalScreen">
+                <div>[SYSTEM INITIALIZATION] Booting framework architecture...</div>
+                <div>[OK] Found core mapping for $MONOS network anchor.</div>
+                <div>[OK] CA Verified: 0x9bF4bDDa5d6cF6B02Cfc5387Fd1B583beabee0aA</div>
+                <div>[OK] Streaming pipeline tied directly into @monos_ai metrics.</div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL: INTERFACE LINKS & NET GRID -->
+        <div class="panel">
+            <div class="panel-title"><span>COMMAND HUB</span><span>[04]</span></div>
+            <div class="nav-grid">
+                <a href="https://github.com/monosairepo" target="_blank" class="btn-cyber">REPOSITORI CORE (GITHUB)</a>
+                <a href="https://app.virtuals.io/virtuals/92785" target="_blank" class="btn-cyber pink">ACQUIRE $MONOS (VIRTUALS.IO)</a>
+            </div>
+
+            <div class="panel-title" style="margin-top: 30px;"><span>SUBNET MAP RECON</span><span>[05]</span></div>
+            <div style="font-size: 11px; color: var(--text-dim);">Live Multi-Agent Connection Points:</div>
+            <div class="matrix-grid" id="matrixGrid"></div>
+        </div>
+
     </div>
 
-    <div class="relative z-10 max-w-[1600px] mx-auto px-4 sm:px-6 mt-4 space-y-8 pb-24">
-        
-        <header class="bg-slate-950/80 panel-border backdrop-blur-xl rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center space-x-4">
+    <script>
+        // Simulasi Terminal Log Berjalan
+        const screen = document.getElementById('terminalScreen');
+        const logs = [
+            () => `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> <span style="color:var(--accent-cyan)">[DATA_INGEST]</span> Pulling social metrics from X architecture...`,
+            () => `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> [ALGO] Running localized matrix logic weights on core_agent.py`,
+            () => `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> [WEIGHTS] Sentiment density verification completed: <span style="color:var(--accent-pink)">HIGH ACCUMULATION</span>`,
+            () => `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> <span style="color:var(--accent-pink)">[L2_BRIDGE]</span> Assembly of secure gas-optimized block pipeline generated.`,
+            () => `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> [LEDGER] Pushed cryptographic signature securely onto Base Mainnet ledger.`,
+            () => `<span style="color:var(--text-dim)">[${new Date().toLocaleTimeString()}]</span> [SUCCESS] Target CA verified secure. Asset routing operational.`
+        ];
+
+        let logIdx = 0;
+        function runLogs() {
+            const el = document.createElement('div');
+            el.innerHTML = logs[logIdx % logs.length]();
+            screen.appendChild(el);
+            screen.scrollTop = screen.scrollHeight;
+            logIdx++;
+            setTimeout(runLogs, Math.random() * 1500 + 1000);
+        }
+        setTimeout(runLogs, 1000);
+
+        // Simulasi Pergerakan Grafik Batang
+        function updateCharts() {
+            document.getElementById('bar1').style.width = Math.floor(Math.random() * 40 + 60) + '%';
+            document.getElementById('bar2').style.width = Math.floor(Math.random() * 50 + 30) + '%';
+            document.getElementById('bar3').style.width = Math.floor(Math.random() * 20 + 80) + '%';
+            setTimeout(updateCharts, 3000);
+        }
+        updateCharts();
+
+        // Membuat Titik Grid Node Dinamis
+        const grid = document.getElementById('matrixGrid');
+        for (let i = 0; i < 40; i++) {
+            const d = document.createElement('div');
+            d.className = 'node-dot';
+            grid.appendChild(d);
+        }
+
+        const dots = document.querySelectorAll('.node-dot');
+        function blinkDots() {
+            dots.forEach(dot => {
+                dot.style.background = Math.random() > 0.7 ? (Math.random() > 0.5 ? 'var(--accent-cyan)' : 'var(--accent-pink)') : '#111827';
+            });
+            setTimeout(blinkDots, 800);
+        }
+        blinkDots();
+    </script>
+</body>
+</html>            <div class="flex items-center space-x-4">
                 <div class="w-11 h-11 rounded-lg bg-gradient-to-br from-cyan-400 via-indigo-500 to-pink-500 flex items-center justify-center font-cyber text-black font-extrabold text-base shadow-md shadow-cyan-500/20">M</div>
                 <div>
                     <div class="flex items-center space-x-2">
