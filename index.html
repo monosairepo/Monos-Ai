@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONOS AI // CENTRAL COMMAND PORTAL</title>
+    <style>
+        :root {
+            --bg-main: #000000;      /* Twitter Pure Black Background */
+            --panel-bg: #15181c;     /* Twitter Card / Container Dark Tint */
+            --panel-inner: #1e2226;  /* Deeper Inner Box Tint */
+            --accent-pure: #ffffff;  /* High Contrast White Accent */
+            --border-muted: #2f3336; /* Twitter Thread Border Line */
+            --text-pure: #e7e9ea;    /* Twitter Main Text White */
+            --text-muted: #71767b;   /* Twitter Secondary Gray Text */
+            --cyber-green: #00ba7c;  /* Twitter Green / Success */
+            --cyber-blue: #1d9bf0;   /* Twitter Blue / Processing */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-pure);
+            padding: 40px 20px;
+            font-size: 14px;
+            letter-spacing: -0.01em;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+        }
+
+        header {
+            grid-column: span 2;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 25px;
+            border-bottom: 1px solid var(--border-muted);
+            margin-bottom: 15px;
+        }
+
+        .brand-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .network-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .live-indicator {
+            width: 6px;
+            height: 6px;
+            background-color: var(--cyber-green);
+            border-radius: 50%;
+        }
+
+        .panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-muted);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            height: fit-content;
+        }
+
+        .section-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--border-muted);
+            padding-bottom: 8px;
+            margin-bottom: 5px;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(47, 51, 54, 0.4);
+        }
+
+        .metric-item span:first-child {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .metric-item span:last-child {
+            color: var(--text-pure);
+            font-weight: 600;
+        }
+
+        .contract-wrapper {
+            background: var(--panel-inner);
+            border: 1px solid var(--border-muted);
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            text-align: center;
+            color: var(--accent-pure);
+        }
+
+        .distribution-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .distribution-table th {
+            text-align: left;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-muted);
+        }
+
+        .distribution-table td {
+            padding: 12px 0;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(47, 51, 54, 0.3);
+        }
+
+        .cta-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-premium {
+            display: block;
+            background: transparent;
+            border: 1px solid var(--border-muted);
+            color: var(--text-pure);
+            padding: 16px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-premium:hover {
+            background: var(--accent-pure);
+            color: var(--bg-main);
+            border-color: var(--accent-pure);
+            cursor: pointer;
+        }
+
+        .btn-premium.primary {
+            border-color: var(--accent-pure);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .terminal-display {
+            background: #07090d;
+            border: 1px solid var(--border-muted);
+            height: 250px;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            color: #d4d7e1;
+            line-height: 1.8;
+        }
+
+        .documentation-block {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .doc-paragraph {
+            color: #bdc1c6;
+            font-size: 13px;
+            text-align: justify;
+        }
+
+        /* TAB INTERACTIVE CONTROL */
+        .tab-header {
+            display: flex;
+            gap: 5px;
+            border-bottom: 1px solid var(--border-muted);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            border-bottom: none;
+            color: var(--text-muted);
+            padding: 10px 20px;
+            font-family: monospace;
+            font-size: 12px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            color: var(--text-pure);
+            background: var(--panel-inner);
+            border-color: var(--border-muted);
+            border-radius: 4px 4px 0 0;
+            margin-bottom: -1px;
+        }
+
+        .tab-content {
+            display: none;
+            background: var(--panel-inner);
+            border: 1px solid var(--border-muted);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        .code-top-bar {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-muted);
+        }
+
+        .code-title {
+            font-family: monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .btn-run-code {
+            background: var(--cyber-blue);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 3px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-run-code:hover { background: #1a8cd8; }
+        .btn-run-code:disabled { background: var(--border-muted); color: var(--text-muted); cursor: not-allowed; }
+
+        .code-editor-area {
+            padding: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #9aa0a6;
+            line-height: 1.6;
+            background: #090b0e;
+            overflow-x: auto;
+            white-space: pre;
+        }
+
+        .console-output-box {
+            background: #020304;
+            border-top: 1px solid var(--border-muted);
+            padding: 15px 20px;
+            font-family: monospace;
+            font-size: 11px;
+            min-height: 120px;
+            max-height: 150px;
+            overflow-y: auto;
+            color: var(--text-muted);
+        }
+
+        /* INTERACTIVE CHAT ENGINE VISUALS */
+        .chat-output-area {
+            background: #090b0e;
+            height: 250px;
+            overflow-y: auto;
+            padding: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-msg {
+            display: flex;
+            flex-direction: column;
+            max-width: 90%;
+        }
+
+        .chat-msg.user {
+            align-self: flex-end;
+            align-items: flex-end;
+        }
+
+        .chat-msg.agent {
+            align-self: flex-start;
+            align-items: flex-start;
+        }
+
+        .msg-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+
+        .msg-text {
+            background: var(--panel-inner);
+            border: 1px solid var(--border-muted);
+            padding: 10px 14px;
+            border-radius: 4px;
+            word-break: break-word;
+        }
+
+        .chat-msg.agent .msg-text {
+            border-left: 3px solid var(--cyber-blue);
+            background: rgba(29, 155, 240, 0.03);
+        }
+
+        .chat-input-bar {
+            display: flex;
+            border-top: 1px solid var(--border-muted);
+            background: #020304;
+        }
+
+        .chat-input-bar input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 15px 20px;
+            color: var(--text-pure);
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .chat-input-bar input:focus {
+            outline: none;
+        }
+
+        .chat-input-bar button {
+            background: transparent;
+            border: none;
+            border-left: 1px solid var(--border-muted);
+            color: var(--cyber-blue);
+            padding: 0 25px;
+            font-family: monospace;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .chat-input-bar button:hover {
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--text-pure);
+        }
+
+        .list-item { display: flex; gap: 15px; }
+        .list-num { color: var(--text-muted); font-family: monospace; font-weight: 700; }
+        .footer-links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px; }
+        .footer-link-card { background: var(--panel-inner); border: 1px solid var(--border-muted); padding: 20px; text-decoration: none; color: var(--text-pure); transition: all 0.2s ease; }
+        .footer-link-card:hover { border-color: var(--accent-pure); background: rgba(255, 255, 255, 0.01); }
+        .footer-link-card .card-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .footer-link-card .card-value { font-size: 14px; font-weight: 700; letter-spacing: -0.01em; }
+
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; }
+            header { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- SYSTEM NAVIGATION CONTAINER -->
+        <header>
+            <div class="brand-title">MONOS // <span style="color: var(--text-muted)">INTELLIGENCE</span></div>
+            <div class="network-badge">
+                <div class="live-indicator"></div>
+                Base Network Pipeline Active // Phase 04
+            </div>
+        </header>
+
+        <!-- COLUMN 01: SYSTEM IDENTIFICATION & METRICS -->
+        <div class="panel">
+            <div>
+                <div class="section-title">Ecosystem Blueprint</div>
+                <div class="metric-item"><span>Protocol Identifier</span><span>Monos AI</span></div>
+                <div class="metric-item"><span>Network Asset Anchor</span><span>$MONOS</span></div>
+                <div class="metric-item"><span>Settlement Layer</span><span>Base L2 Mainnet</span></div>
+                <div class="metric-item"><span>Automation State</span><span>Autonomous Loop</span></div>
+            </div>
+
+            <div>
+                <div class="section-title">Verified Token Ledger</div>
+                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">Deployment Target Smart Contract Address:</p>
+                <div class="contract-wrapper">0x9bF4bDDa5d6cF6B02Cfc5387Fd1B583beabee0aA</div>
+            </div>
+
+            <div>
+                <div class="section-title">Tokenomics Architecture</div>
+                <div class="metric-item" style="border-bottom: 1px solid var(--border-muted); padding-bottom: 12px; margin-bottom: 10px;">
+                    <span>Total Aggregate Supply</span>
+                    <span style="font-size: 16px; font-weight: 800;">1,000,000,000</span>
+                </div>
+                
+                <table class="distribution-table">
+                    <thead>
+                        <tr>
+                            <th>Allocation Node</th>
+                            <th style="text-align: right;">Weight</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Liquidity Pool (veVIRTUAL)</td>
+                            <td style="text-align: right; font-weight: 700;">45.0%</td>
+                        </tr>
+                        <tr>
+                            <td>Automated Capital Formation</td>
+                            <td style="text-align: right; font-weight: 700;">25.0%</td>
+                        </tr>
+                        <tr>
+                            <td>Core Development Team</td>
+                            <td style="text-align: right; font-weight: 700;">25.0%</td>
+                        </tr>
+                        <tr>
+                            <td>Ecosystem Airdrop Subnet</td>
+                            <td style="text-align: right; font-weight: 700;">5.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+                <div class="section-title">Protocol Interfaces</div>
+                <div class="cta-stack">
+                    <a href="https://app.virtuals.io/virtuals/92785" target="_blank" class="btn-premium primary">Acquire Asset via Virtuals.io</a>
+                    <a href="https://github.com/monosairepo" target="_blank" class="btn-premium">Review Source Blueprints</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMN 02: LIVE RUNTIME STREAM & INTERACTIVE CONTROL MATRIX -->
+        <div class="panel">
+            <div>
+                <div class="section-title">Autonomous Log Stream Operations</div>
+                <div class="terminal-display" id="runtimeTerminal">
+                    <div style="color: var(--text-muted);">[SYS_INIT] Initializing global network tracking matrix...</div>
+                    <div>[SYS_CONF] 1,000,000,000 $MONOS tokens verified on-chain.</div>
+                    <div>[SYS_LINK] Binding directly to Virtuals Protocol veVIRTUAL routing paths.</div>
+                </div>
+            </div>
+
+            <!-- DUAL TAB INTERACTIVE COMPONENT -->
+            <div>
+                <div class="section-title">02 // Core Interface Terminals</div>
+                <div class="tab-header">
+                    <button class="tab-btn active" onclick="switchTab('ideTab', this)">core_agent.py</button>
+                    <button class="tab-btn" onclick="switchTab('chatTab', this)">monos_chat.sh</button>
+                </div>
+
+                <!-- TAB 1: IDE CORE RUNNER -->
+                <div id="ideTab" class="tab-content active">
+                    <div class="code-top-bar">
+                        <div class="code-title">Execution Instance Emulator</div>
+                        <button class="btn-run-code" id="btnRunCode" onclick="runAgentSimulation()">Run Code</button>
+                    </div>
+                    <pre class="code-editor-area">import time, cryptography
+
+class MonosCoreAgent:
+    def __init__(self):
+        self.ca = "0x9bF4bDDa5d6cF6B02Cfc5387Fd1B583beabee0aA"
+        self.network = "Base_L2"
+
+    def deploy_gasless_signature(self):
+        print("[SUCCESS] Dispatched Immutable Block Signal.")</pre>
+                    <div class="console-output-box" id="consoleOutputBox">
+                        <div class="console-log-line" style="color: var(--text-muted)">// Click "Run Code" to compile the module block signal.</div>
+                    </div>
+                </div>
+
+                <!-- TAB 2: INTERACTIVE AI CHATBOT TERMINAL -->
+                <div id="chatTab" class="tab-content">
+                    <div class="chat-output-area" id="chatOutputArea">
+                        <div class="chat-msg agent">
+                            <span class="msg-label">Monos AI</span>
+                            <div class="msg-text">System operational. I am Monos, an autonomous agent running on Base L2 via Virtuals Protocol. Enter telemetry query or type "help" for a list of directives.</div>
+                        </div>
+                    </div>
+                    <div class="chat-input-bar">
+                        <input type="text" id="chatInputField" placeholder="Type your directive here (e.g., tokenomics, ca, base)..." onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                        <button onclick="sendChatMessage()">Execute</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DEEP SCROLL DOCUMENTATION BLOCK -->
+            <div class="documentation-block">
+                <div class="section-title">03 // Functional Architecture Overview</div>
+                <p class="doc-paragraph">
+                    Monos AI represents an advanced autonomous execution protocol launched natively on the Base Layer-2 framework. Designed to remove structural latency and human execution biases from modern multi-agent coordination layers.
+                </p>
+
+                <div class="section-title" style="margin-top: 15px;">04 // Execution Pipeline Protocols</div>
+                <div class="list-item">
+                    <div class="list-num">01 /</div>
+                    <div class="doc-paragraph"><strong>Data Capture Ingestion:</strong> Distributed network monitoring layers actively intercept metadata profiles and sequence high-frequency vector indicators straight from public communication nodes.</div>
+                </div>
+                <div class="list-item">
+                    <div class="list-num">02 /</div>
+                    <div class="doc-paragraph"><strong>Matrix Weight Calculation:</strong> The compiled datasets are parsed by the engine block. It processes structural text weight values against strict internal formulas.</div>
+                </div>
+
+                <!-- BOTTOM EXTERIOR LINKS BLOCK -->
+                <div class="section-title" style="margin-top: 25px;">05 // System Footnotes & Exterior Links</div>
+                <div class="footer-links-grid">
+                    <a href="https://github.com/monosairepo" target="_blank" class="footer-link-card">
+                        <div class="card-label">Repository Node</div>
+                        <div class="card-value">GitHub // Open Source</div>
+                    </a>
+                    <a href="https://x.com/monos_ai" target="_blank" class="footer-link-card">
+                        <div class="card-label">Broadcast Network</div>
+                        <div class="card-value">Twitter // X Feed</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // TAB SWITCHER LOGIC
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // STABLE BACKGROUND TERMINAL SIMULATOR
+        const terminal = document.getElementById('runtimeTerminal');
+        const logs = [
+            "[METRIC_INGEST] Ingesting communication metrics vectors...",
+            "[ALGO_EVAL] core_agent.py parsing local consensus distribution fields...",
+            "[ROUTING] Active veVIRTUAL liquidity routes running at operational peak.",
+            "[SIGNATURE] Packaging cryptographic signatures into Base pipeline channels...",
+            "[LEDGER] Transaction block safely settled on L2 mainnet. Status: Immutable."
+        ];
+
+        let logCounter = 0;
+        function streamExecutionLogs() {
+            if(!terminal) return;
+            const timeStr = new Date().toLocaleTimeString();
+            const row = document.createElement('div');
+            
+            if(logCounter % 5 === 4) {
+                row.innerHTML = `<span style="color:var(--text-muted)">[${timeStr}]</span> <span style="color:var(--cyber-green)">${logs[4]}</span>`;
+            } else {
+                row.innerHTML = `<span style="color:var(--text-muted)">[${timeStr}]</span> ${logs[logCounter % logs.length]}`;
+            }
+            
+            terminal.appendChild(row);
+            terminal.scrollTop = terminal.scrollHeight;
+            logCounter++;
+            
+            if(terminal.childNodes.length > 50) {
+                terminal.removeChild(terminal.firstChild);
+            }
+            
+            setTimeout(streamExecutionLogs, Math.random() * 2000 + 1500);
+        }
+        setTimeout(streamExecutionLogs, 1000);
+
+        // TAB 1: CODE RUNNER INSTANCE
+        function runAgentSimulation() {
+            const button = document.getElementById("btnRunCode");
+            const consoleBox = document.getElementById("consoleOutputBox");
+            if(!button || !consoleBox) return;
+            
+            button.disabled = true;
+            consoleBox.innerHTML = `<div class="console-log-line" style="color: var(--cyber-blue)">[INIT] Executing core_agent.py micro-instance...</div>`;
+            
+            setTimeout(() => {
+                consoleBox.innerHTML += `<div class="console-log-line" style="color: #e7e9ea">> Scanning ecosystem telemetry data matrix... Complete.</div>`;
+                consoleBox.scrollTop = consoleBox.scrollHeight;
+            }, 800);
+
+            setTimeout(() => {
+                consoleBox.innerHTML += `<div class="console-log-line" style="color: #e7e9ea">> Analysis Engine Result: <span style="color: var(--cyber-green)">"BULLISH_ACCUMULATION_STATE"</span></div>`;
+                consoleBox.scrollTop = consoleBox.scrollHeight;
+            }, 1600);
+
+            setTimeout(() => {
+                consoleBox.innerHTML += `<div class="console-log-line" style="color: var(--cyber-green); font-weight: bold;">[SUCCESS] Autonomous Block Dispatched to Base Net!</div>`;
+                consoleBox.scrollTop = consoleBox.scrollHeight;
+                button.disabled = false;
+            }, 2400);
+        }
+
+        // TAB 2: INTERACTIVE JAVASCRIPT INTENT AI ENGINE (LOCAL BOT)
+        function sendChatMessage() {
+            const inputField = document.getElementById('chatInputField');
+            const chatArea = document.getElementById('chatOutputArea');
+            if(!inputField || !chatArea || inputField.value.trim() === "") return;
+
+            const userText = inputField.value.trim();
+            inputField.value = "";
+
+            // Print User Message
+            chatArea.innerHTML += `
+                <div class="chat-msg user">
+                    <span class="msg-label">Operator</span>
+                    <div class="msg-text">${escapeHtml(userText)}</div>
+                </div>
+            `;
+            chatArea.scrollTop = chatArea.scrollHeight;
+
+            // AI Processing State
+            setTimeout(() => {
+                const responseText = getAIResponse(userText.toLowerCase());
+                chatArea.innerHTML += `
+                    <div class="chat-msg agent">
+                        <span class="msg-label">Monos AI</span>
+                        <div class="msg-text">${responseText}</div>
+                    </div>
+                `;
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }, 500);
+        }
+
+        // MATRIX INTENT INTELLIGENCE MAPPING
+        function getAIResponse(input) {
+            if (input.includes('ca') || input.includes('contract') || input.includes('alamat')) {
+                return "The verified smart contract for $MONOS on Base L2 is: <span style='color:var(--cyber-blue); font-weight:bold;'>0x9bF4bDDa5d6cF6B02Cfc5387Fd1B583beabee0aA</span>. Always cross-check via Virtuals Protocol.";
+            }
+            if (input.includes('tokenomics') || input.includes('supply') || input.includes('alokasi')) {
+                return "Asset Architecture: Total supply is fixed at 1,000,000,000 $MONOS. 45% is hardlocked inside veVIRTUAL routing paths, 25% is dedicated to automated capital formation nodes, 25% team lock, and 5% ecosystem drop.";
+            }
+            if (input.includes('base') || input.includes('layer 2') || input.includes('l2')) {
+                return "Monos AI uses the Base L2 network infrastructure for gasless validation parameters and optimal throughput velocity. Transactions settle under 2000ms thresholds.";
+            }
+            if (input.includes('virtuals') || input.includes('protocol')) {
+                return "We are natively integrated into Virtuals Protocol. The token bonding algorithm automatically weights veVIRTUAL token pools for autonomous scalability mapping.";
+            }
+            if (input.includes('help') || input.includes('bantuan') || input.includes('menu')) {
+                return "Available data vectors queries: <br>&bull; <strong>ca</strong> - View deployment contract address<br>&bull; <strong>tokenomics</strong> - Print complete distribution breakdown<br>&bull; <strong>base</strong> - Layer-2 configuration specifications<br>&bull; <strong>virtuals</strong> - Ecosystem structural bonding protocol overview.";
+            }
+            if (input.includes('halo') || input.includes('hi') || input.includes('hello') || input.includes('p')) {
+                return "Hello, operator. Neural connection stable. Ask me about the system's <strong>ca</strong>, <strong>tokenomics</strong>, or type <strong>help</strong>.";
+            }
+            
+            // Default Dynamic Fallback
+            return "Query processed. Vector input fell into unstructured space. I am fully autonomous and built on Base. Type <strong>help</strong> to review my available internal telemetry paths.";
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
