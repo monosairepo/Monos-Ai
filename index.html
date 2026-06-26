@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS OS // MASTER COMMAND CONTROL</title>
+    <style>
+        :root {
+            --bg-base: #000000;
+            --surface-card: #090b0e;
+            --surface-inner: #11141a;
+            --border-grid: #1c2027;
+            
+            /* High-End Tech Palette */
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #ff0055;
+            --cyber-green: #00ffaa;
+            --dim-cyan: rgba(0, 243, 255, 0.05);
+            --dim-magenta: rgba(255, 0, 85, 0.05);
+            
+            --text-main: #f1f3f7;
+            --text-muted: #697280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            padding: 60px 20px;
+            font-size: 13px;
+            letter-spacing: -0.01em;
+            line-height: 1.6;
+        }
+
+        .master-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        /* STICKY STATUS BAR UPPER HEADER */
+        header {
+            background: var(--surface-card);
+            border: 1px solid var(--border-grid);
+            padding: 25px 35px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+        }
+
+        .brand-cluster {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pulsing-node {
+            width: 10px;
+            height: 10px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 15px var(--neon-cyan);
+            animation: pulseGlow 2s infinite ease-in-out;
+        }
+
+        .brand-title {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .status-pill-grid {
+            display: flex;
+            gap: 15px;
+        }
+
+        .status-pill {
+            background: var(--surface-inner);
+            border: 1px solid var(--border-grid);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        /* 2-COLUMN MAIN STRUCTUR */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1.9fr;
+            gap: 35px;
+        }
+
+        /* LEFT SIDEBAR OR RIGID SPEC PANEL */
+        .sidebar-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        /* COMPONENT CORE PANEL */
+        .panel-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border-grid);
+            border-radius: 20px;
+            padding: 35px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .section-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--neon-magenta);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--border-grid);
+            padding-bottom: 12px;
+        }
+
+        /* CUSTOM MODERN DATA GRID ROWS */
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            background: var(--surface-inner);
+            border-radius: 12px;
+            border: 1px solid var(--border-grid);
+        }
+
+        .data-row .title {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .data-row .value {
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .address-hash-box {
+            background: var(--bg-base);
+            border: 1px dashed var(--border-grid);
+            padding: 16px;
+            border-radius: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            color: var(--neon-cyan);
+            text-align: center;
+            word-break: break-all;
+        }
+
+        /* MINI CHART GRAPH VISUALIZER */
+        .wave-graph-area {
+            background: var(--surface-inner);
+            border: 1px solid var(--border-grid);
+            border-radius: 14px;
+            height: 90px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 10px;
+            gap: 4px;
+        }
+
+        .wave-bar {
+            flex: 1;
+            background: var(--dim-cyan);
+            border-top: 2px solid var(--neon-cyan);
+            height: 20%;
+            animation: audioBounce 1.8s infinite ease-in-out alternate;
+        }
+
+        /* PREMIUM BUTTON STYLING */
+        .action-flex-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-premium-tech {
+            background: var(--surface-inner);
+            border: 1px solid var(--border-grid);
+            color: var(--text-main);
+            padding: 18px;
+            border-radius: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: all 0.25s ease;
+        }
+
+        .btn-premium-tech:hover {
+            background: #fff;
+            color: #000;
+            transform: translateY(-2px);
+            cursor: pointer;
+        }
+
+        .btn-premium-tech.active-glow {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        /* RIGHT CONTENT STREAM (LONG SCROLL AREA) */
+        .main-content-scroll {
+            display: flex;
+            flex-direction: column;
+            gap: 35px;
+        }
+
+        /* TERMINAL VIEWBOX COMPONENT */
+        .terminal-container {
+            display: flex;
+            flex-direction: column;
+            background: #040507;
+            border: 1px solid var(--border-grid);
+            border-radius: 18px;
+            overflow: hidden;
+        }
+
+        .terminal-top-bar {
+            background: var(--surface-inner);
+            padding: 12px 25px;
+            border-bottom: 1px solid var(--border-grid);
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .terminal-screen-output {
+            height: 300px;
+            padding: 25px;
+            overflow-y: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            color: #a5adc0;
+            line-height: 1.8;
+        }
+
+        /* ARTICLE / DOCS LAYOUT */
+        .text-block-wrapper {
+            background: var(--surface-inner);
+            padding: 25px;
+            border-radius: 14px;
+            border-left: 3px solid var(--neon-magenta);
+        }
+
+        .text-block-wrapper p {
+            color: #abb3c6;
+            font-size: 13.5px;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        /* DATA TABLE GRID COMPONENT */
+        .data-table-node {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        .data-table-node th {
+            text-align: left;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-grid);
+            letter-spacing: 1px;
+        }
+
+        .data-table-node td {
+            padding: 15px 10px;
+            border-bottom: 1px solid rgba(28, 32, 39, 0.4);
+            font-size: 13px;
+        }
+
+        /* INTERFACE COMPONENT GRID CARDS */
+        .cards-cluster-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .feature-box-card {
+            background: var(--surface-inner);
+            border: 1px solid var(--border-grid);
+            padding: 25px;
+            border-radius: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .feature-box-card:hover {
+            border-color: var(--neon-cyan);
+            background: var(--dim-cyan);
+        }
+
+        .feature-box-card .num-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--text-muted);
+            font-family: monospace;
+        }
+
+        .feature-box-card .box-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .feature-box-card .box-desc {
+            color: var(--text-muted);
+            font-size: 12.5px;
+            line-height: 1.6;
+        }
+
+        /* BOTTOM EXTERNAL FOOTER LINKS */
+        .footer-grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .footer-link-block {
+            background: var(--surface-card);
+            border: 1px solid var(--border-grid);
+            padding: 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.2s;
+        }
+
+        .footer-link-block:hover {
+            border-color: #fff;
+            background: rgba(255,255,255,0.02);
+        }
+
+        .footer-link-block .label-sub {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .footer-link-block .anchor-text {
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* ANIMATIONS LIST */
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 1; box-shadow: 0 0 15px var(--neon-cyan); }
+            50% { transform: scale(1.2); opacity: 0.4; box-shadow: 0 0 5px var(--neon-cyan); }
+        }
+
+        @keyframes audioBounce {
+            0% { height: 15%; }
+            100% { height: 85%; }
+        }
+
+        @media (max-width: 1024px) {
+            .layout-grid { grid-template-columns: 1fr; }
+            .footer-grid-container { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="master-container">
+        
+        <!-- SECTION 1: SYSTEM MONITOR BAR -->
+        <header>
+            <div class="brand-cluster">
+                <div class="pulsing-node"></div>
+                <div class="brand-title">NEXUS_CORE // INTEGRATED_INTERFACE_v2.6</div>
+            </div>
+            <div class="status-pill-grid">
+                <div class="status-pill">SYS_LOAD: NOMINAL</div>
+                <div class="status-pill" style="color: var(--cyber-green);">NETWORK_LIVE</div>
+            </div>
+        </header>
+
+        <!-- MAIN GRID DISTRIBUTION FRAMEWORK -->
+        <div class="layout-grid">
+            
+            <!-- LEFT PANEL: PERSISTENT TELEMETRY RUNTIME SPECIFICATION -->
+            <div class="sidebar-stack">
+                
+                <!-- SECTION 2: IDENTITY MATRICES -->
+                <div class="panel-card">
+                    <div class="section-label">01 / NODE IDENTITY MATRICES</div>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="data-row">
+                            <span class="title">System Kernel</span>
+                            <span class="value">ALPHA_ORBIT_MAIN</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="title">Target Core Framework</span>
+                            <span class="value">$TBA</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="title">Settlement Settlement</span>
+                            <span class="value">Base L2 Layer</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="title">Operation Loop State</span>
+                            <span class="value" style="color: var(--cyber-green);">SIMULATING</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: REPOS CONTRACT LAYER -->
+                <div class="panel-card">
+                    <div class="section-label">02 / DEPLOYMENT LEDGER ADDRESS</div>
+                    <p style="color: var(--text-muted); font-size: 12px;">Active routing address identifier parameter:</p>
+                    <div class="address-hash-box">0x0000000000000000000000000000000000000000</div>
+                </div>
+
+                <!-- SECTION 4: HARDWARE SIGNAL FREQUENCY -->
+                <div class="panel-card">
+                    <div class="section-label">03 / REALTIME SIGNAL WAVE</div>
+                    <div class="wave-graph-area" id="waveGraphContainer">
+                        <!-- Bars dynamically loaded with randomly assigned animation delays via JavaScript -->
+                    </div>
+                    <p style="color: var(--text-muted); font-size: 12px; text-align: center;">Frequency scanning vector telemetry streams active.</p>
+                </div>
+
+                <!-- SECTION 5: ACTION MATRIX LINK GATEWAY -->
+                <div class="panel-card">
+                    <div class="section-label">04 / PROTOCOL GATEWAY DIRECTIVES</div>
+                    <div class="action-flex-stack">
+                        <a href="#" class="btn-premium-tech active-glow">INITIALIZE WORKSTATION</a>
+                        <a href="#" class="btn-premium-tech">DOWNLOAD BLUEPRINTS</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT PANEL: CONTENT SCROLL CONTAINER (BIG CONTENT BLOCK) -->
+            <div class="main-content-scroll">
+                
+                <!-- SECTION 6: HIGH FREQUENCY OPERATIONAL TERMINAL FEED -->
+                <div class="terminal-container">
+                    <div class="terminal-top-bar">
+                        <span>SHELL_OPERATOR // STREAM_FEED</span>
+                        <span>SPEED: 115200 BAUD</span>
+                    </div>
+                    <div class="terminal-screen-output" id="masterTerminalFeed">
+                        <div style="color: var(--text-muted);">[SYS_BOOT] Preparing core environment telemetry blocks...</div>
+                        <div>[SUCCESS] Core virtual system stack loaded flawlessly.</div>
+                    </div>
+                </div>
+
+                <!-- SECTION 7: DETAILED SYSTEM ABSTRACT DESCRIPTION -->
+                <div class="panel-card">
+                    <div class="section-label">05 / SYSTEM FUNCTIONAL SPECIFICATION</div>
+                    <div class="text-block-wrapper">
+                        <p>
+                            This enterprise-grade interface platform provides a modular, low-overhead canvas designed specifically for visualizing decentralized automation workflows. Operating at absolute peak efficiency on layered execution stacks, the protocol completely abstracts data stream translation into easily manageable visual indicators.
+                        </p>
+                    </div>
+                    <div class="text-block-wrapper" style="border-left-color: var(--neon-cyan);">
+                        <p>
+                            By integrating custom client configurations with background data arrays, users can track and respond to high-frequency network adjustments, infrastructure balancing events, and localized transaction validations without layout shifts or heavy script stalls.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- SECTION 8: STRUCTURAL DISTRIBUTED ALLOCATION TABLE -->
+                <div class="panel-card">
+                    <div class="section-label">06 / NETWORK MATRICES ALLOCATION ESTIMATE</div>
+                    <table class="data-table-node">
+                        <thead>
+                            <tr>
+                                <th>Subnet Matrix Segment</th>
+                                <th>Deployment Node</th>
+                                <th style="text-align: right;">Target Weight Load</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Liquidity Corridor Architecture</td>
+                                <td style="font-family: monospace; color: var(--text-muted);">NODE_SEG_01</td>
+                                <td style="text-align: right; color: var(--neon-cyan); font-weight: 700;">-- %</td>
+                            </tr>
+                            <tr>
+                                <td>Automated Network Incentives</td>
+                                <td style="font-family: monospace; color: var(--text-muted);">NODE_SEG_02</td>
+                                <td style="text-align: right; color: var(--neon-cyan); font-weight: 700;">-- %</td>
+                            </tr>
+                            <tr>
+                                <td>Core Ecosystem Infrastructure Reserve</td>
+                                <td style="font-family: monospace; color: var(--text-muted);">NODE_SEG_03</td>
+                                <td style="text-align: right; color: var(--neon-cyan); font-weight: 700;">-- %</td>
+                            </tr>
+                            <tr>
+                                <td>Community Subnet Expansion Nodes</td>
+                                <td style="font-family: monospace; color: var(--text-muted);">NODE_SEG_04</td>
+                                <td style="text-align: right; color: var(--neon-cyan); font-weight: 700;">-- %</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- SECTION 9: ADVANCED UTILITY CARDS GRID -->
+                <div class="panel-card">
+                    <div class="section-label">07 / INTEGRATED CAPABILITIES MATRIX</div>
+                    <div class="cards-cluster-2col">
+                        <div class="feature-box-card">
+                            <div class="num-tag">[SYS_MOD_01]</div>
+                            <div class="box-title">Ingestion Pipeline</div>
+                            <div class="box-desc">Interceptors monitor and isolate incoming raw telemetry flows instantly.</div>
+                        </div>
+                        <div class="feature-box-card">
+                            <div class="num-tag">[SYS_MOD_02]</div>
+                            <div class="box-title">Weight Analysis</div>
+                            <div class="box-desc">Internal algorithmic modules compute dataset relevance profiles against set rules.</div>
+                        </div>
+                        <div class="feature-box-card">
+                            <div class="num-tag">[SYS_MOD_03]</div>
+                            <div class="box-title">L2 State Settlement</div>
+                            <div class="box-desc">Low-level execution loops pack system metadata configurations onto targets.</div>
+                        </div>
+                        <div class="feature-box-card">
+                            <div class="num-tag">[SYS_MOD_04]</div>
+                            <div class="box-title">Telemetry Loop</div>
+                            <div class="box-desc">Maintains self-healing feedback triggers for background processing verification.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION 10: ARCHIVE DIRECTORY GRID FOOTER -->
+                <div class="panel-card">
+                    <div class="section-label">08 / SYSTEM EXTERNAL FOOTNOTES</div>
+                    <div class="footer-grid-container">
+                        <a href="#" class="footer-link-block">
+                            <div class="label-sub">Repository Node</div>
+                            <div class="anchor-text">GitHub Space</div>
+                        </a>
+                        <a href="#" class="footer-link-block">
+                            <div class="label-sub">Network Feed</div>
+                            <div class="anchor-text">Twitter / X</div>
+                        </a>
+                        <a href="#" class="footer-link-block">
+                            <div class="label-sub">Documentation</div>
+                            <div class="anchor-text">GitBook Docs</div>
+                        </a>
+                        <a href="#" class="footer-link-block">
+                            <div class="label-sub">Community Hub</div>
+                            <div class="anchor-text">Discord Base</div>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        // GENERATE GRAPH BARS DYNAMICALLY
+        const graphContainer = document.getElementById('waveGraphContainer');
+        if (graphContainer) {
+            for (let i = 0; i < 28; i++) {
+                const bar = document.createElement('div');
+                bar.classList.add('wave-bar');
+                // Random animation speeds and heights to make it look active
+                bar.style.animationDelay = `${Math.random() * 1.5}s`;
+                bar.style.animationDuration = `${0.6 + Math.random() * 1.2}s`;
+                graphContainer.appendChild(bar);
+            }
+        }
+
+        // CONTINUOUS LIVE TERMINAL OUTPUT LOOP
+        const terminalOutput = document.getElementById('masterTerminalFeed');
+        const telemetryLogs = [
+            "[TELEMETRY] Querying distributed pipeline clusters...",
+            "[MATRIX] Filtering contextual data vector fields...",
+            "[INFO] Resource matrix optimization loop running at maximum stability.",
+            "[CRYPTOGRAPHY] Refreshed hardware security validation keys successfully.",
+            "[SYNC_LOOP] Epoch cycle sequence executed flawlessly. Current state: Holding."
+        ];
+
+        let logSequence = 0;
+        function processLogs() {
+            if(!terminalOutput) return;
+            const timeString = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            
+            if(logSequence % 5 === 4) {
+                logEntry.innerHTML = `<span style="color:var(--text-muted)">[${timeString}]</span> <span style="color:var(--neon-magenta)">${telemetryLogs[4]}</span>`;
+            } else {
+                logEntry.innerHTML = `<span style="color:var(--text-muted)">[${timeString}]</span> ${telemetryLogs[logSequence % telemetryLogs.length]}`;
+            }
+            
+            terminalOutput.appendChild(logEntry);
+            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            logSequence++;
+            
+            // Limit text size to keep things lightweight
+            if(terminalOutput.childNodes.length > 40) {
+                terminalOutput.removeChild(terminalOutput.firstChild);
+            }
+            
+            setTimeout(processLogs, Math.random() * 1400 + 800);
+        }
+        setTimeout(processLogs, 800);
+    </script>
+</body>
+</html>
